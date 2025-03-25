@@ -1,0 +1,30 @@
+📌 Tuto : Synchroniser un repo Git sur plusieurs PC
+
+1. Cloner le dépôt sur le nouveau PC :
+   git clone https://github.com/TON_USERNAME/NOM_REPO.git
+   cd NOM_REPO
+
+2. Pour éviter les login/mdp :
+   Option A - SSH (recommandé) :
+   git clone git@github.com:TON_USERNAME/NOM_REPO.git
+
+   Option B - Token :
+   → Créer un token dans GitHub Settings > Developer Settings
+
+3. Workflow de base :
+   - Avant de travailler :
+     git pull
+   - Après modifications :
+     git add .
+     git commit -m "Description des changements"
+     git push
+
+4. En cas de conflits :
+   git pull --rebase
+   → Résoudre les conflits manuellement
+   git push
+
+5. Commandes utiles :
+   - Voir les modifications : git status
+   - Annuler un fichier : git restore FICHIER
+   - Sauvegarder sans commiter : git stash

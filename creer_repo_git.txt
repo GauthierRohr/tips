@@ -8,14 +8,38 @@
 
 3. Lier à GitHub (après avoir créé le dépôt vide sur GitHub) :
    git remote add origin https://github.com/TON_USERNAME/NOM_REPO.git
+   git remote add origin https://github.com/GauthierRohr/*REPO*.git
 
 4. Ajouter les fichiers et commiter :
    git add .
    git commit -m "Initial commit"
 
 5. Pousser vers GitHub :
-   git push -u origin main
-   (ou "master" si erreur)
+   git push -u origin master
+   (ou "main" si erreur)
+
+5.5 Si erreur :
+	"c2r5s5% git push -u origin master
+	fatal: 'origin' does not appear to be a git repository
+	fatal: Could not read from remote repository.
+
+	Please make sure you have the correct access rights
+	and the repository exists.
+	c2r5s5% git push -u origin main  
+	error: src refspec main does not match any
+	error: failed to push some refs to 'origin'"
+
+	a. Configurer le dépôt distant (origin)
+	# Remplace l'URL par la tienne (en HTTPS ou SSH)
+	git remote add origin https://github.com/GauthierRohr/*REPO*.git
+
+	b. Renommer la branche locale (optionnel mais recommandé)
+	git branch -m main  # Change "master" en "main"
+
+	c. Pousser vers GitHub
+	# Premier push (avec -u pour suivre la branche)
+	git push -u origin main
+
 
 6. Optionnel : Créer un .gitignore pour C :
    echo -e "*.o\\n*.a\\n*.out\\n*.dSYM/\\n.DS_Store" > .gitignore
