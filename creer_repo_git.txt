@@ -1,0 +1,27 @@
+📌 Tuto : Créer un repo Git depuis un dossier local
+
+1. Naviguer dans le dossier :
+   cd /chemin/vers/ton/projet
+
+2. Initialiser Git :
+   git init
+
+3. Lier à GitHub (après avoir créé le dépôt vide sur GitHub) :
+   git remote add origin https://github.com/TON_USERNAME/NOM_REPO.git
+
+4. Ajouter les fichiers et commiter :
+   git add .
+   git commit -m "Initial commit"
+
+5. Pousser vers GitHub :
+   git push -u origin main
+   (ou "master" si erreur)
+
+6. Optionnel : Créer un .gitignore pour C :
+   echo -e "*.o\\n*.a\\n*.out\\n*.dSYM/\\n.DS_Store" > .gitignore
+
+⚠️ Si besoin d'authentification :
+- Générer un token GitHub (Settings > Developer Settings)
+- Ou configurer SSH :
+  ssh-keygen -t ed25519 -C "ton@email.com"
+  → Ajouter ~/.ssh/id_ed25519.pub à GitHub
