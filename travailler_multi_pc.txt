@@ -3,10 +3,14 @@
 1. Cloner le dépôt sur le nouveau PC :
    git clone https://github.com/TON_USERNAME/NOM_REPO.git
    cd NOM_REPO
+   --moi-- :
+   git clone https://github.com/GauthierRohr/*REPO*.git
+   cd REPO
 
 2. Pour éviter les login/mdp :
    Option A - SSH (recommandé) :
    git clone git@github.com:TON_USERNAME/NOM_REPO.git
+   git clone git@github.com:GauthierRohr/*REPO*.git
 
    Option B - Token :
    → Créer un token dans GitHub Settings > Developer Settings
