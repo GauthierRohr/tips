@@ -1,0 +1,202 @@
+📛 ERREURS COURANTES ET SOLUTIONS PRATIQUES
+
+1. SEGFAULT - Accès NULL
+---------------------------------
+[CODE BUGGÉ] :
+
+int main()
+{
+	int *p = NULL;  // p pointe vers l'adresse 0 (rien)
+	*p = 42;        // Essaye d'écrire 42 à l'adresse 0 → CRASH
+	return (0);
+}
+
+[DEBUG] :
+$ gcc -g segfault.c -o segfault
+$ gdb ./segfault
+(gdb) run
+Program received signal SIGSEGV, Segmentation fault. // SIGSEGV : Violation d'accès mémoire
+0x0000555555555151 in main () at segfault.c:4
+4       *p = 42;
+(gdb) print p
+$1 = (int *) 0x0  # Confirme l'accès à NULL
+
+[SOLUTIONS] :
+1.  Allouer de la mémoire :
+int main()
+{
+	int *p = malloc(sizeof(int));  // Réserve un espace mémoire
+	*p = 42;                       // Écriture OK
+	free(p);                       // Libère la mémoire
+}
+
+2. Pointer vers une variable existante:
+int main()
+{
+	int value;     // Variable valide
+	int *p = &value;  // p pointe vers value
+	*p = 42;       // Écrit dans value
+}
+
+3. Vérifier avant d'écrire :
+int main()
+{
+	if (p != NULL)
+	{
+		*p = 42;  // Sécurisé
+	}
+	else {
+    printf("Erreur : pointeur NULL !\n");
+}
+
+}
+
+2. DÉBORDEMENT DE TABLEAU
+---------------------------------
+[CODE BUGGÉ] :
+void fill() {
+    int arr[3];
+    for (int i=0; i<=3; i++)  // Bug : <= au lieu de <
+        arr[i] = i;
+}
+
+[DEBUG] :
+$ gcc -g -fsanitize=address overflow.c -o overflow
+$ ./overflow
+==ERROR: AddressSanitizer: stack-buffer-overflow
+WRITE of size 4 at 0x7ffd4f3a3f0c thread T0
+    #0 0x55a5b5a5b1a9 in fill (overflow.c:5)
+
+[SOLUTION] :
+Corriger la condition :
+for (int i=0; i<3; i++)
+
+3. UTILISATION APRÈS FREE
+---------------------------------
+[CODE BUGGÉ] :
+char *s = malloc(10);
+free(s);
+strcpy(s, "bug");  // UAF
+
+[DEBUG] :
+$ valgrind --tool=memcheck ./uaf
+== Invalid write of size 4
+==    at 0x1091A3: main (uaf.c:6)
+== Address 0x4a52040 is 0 bytes inside a block free'd
+
+[SOLUTION] :
+Mettre le pointeur à NULL après free :
+free(s); s = NULL;
+
+4. DIVISION PAR ZÉRO
+---------------------------------
+[CODE BUGGÉ] :
+int calc(int a, int b) {
+    return a/b;  # Crash si b=0
+}
+
+[DEBUG] :
+$ gdb ./divide
+(gdb) catch throw
+(gdb) run
+Catchpoint 1 (exception thrown), 0x00007ffff7e33fbb in __GI_raise
+
+[SOLUTION] :
+Ajouter un test :
+if (b == 0) return 0;
+
+5. RACE CONDITION
+---------------------------------
+[CODE BUGGÉ] :
+int counter = 0;
+void *inc() {
+    for (int i=0; i<1000; i++) counter++;
+}
+
+[DEBUG] :
+$ valgrind --tool=helgrind ./race
+== Possible data race during write
+==    at 0x1091BE: inc (race.c:5)
+
+[SOLUTION] :
+Ajouter un mutex :
+pthread_mutex_lock(&lock);
+counter++;
+pthread_mutex_unlock(&lock);
+
+6. FUITE MÉMOIRE
+---------------------------------
+[CODE BUGGÉ] :
+void leak() {
+    malloc(100);  # Pas de free
+}
+
+[DEBUG] :
+$ valgrind --leak-check=full ./leak
+== 100 bytes in 1 blocks are definitely lost
+==    at 0x483877F: malloc (vg_replace_malloc.c:307)
+
+[SOLUTION] :
+Stocker et libérer :
+void *p = malloc(100);
+...
+free(p);
+
+7. DEADLOCK
+---------------------------------
+[CODE BUGGÉ] :
+// Thread 1 : lock(A); lock(B);
+// Thread 2 : lock(B); lock(A);
+
+[DEBUG] :
+$ valgrind --tool=helgrind ./deadlock
+== Cycle in lock order graph
+
+[SOLUTION] :
+Ordonner les verrous :
+// Tous les threads : lock(A) puis lock(B)
+
+8. BUFFER OVERFLOW
+---------------------------------
+[CODE BUGGÉ] :
+char buf[10];
+gets(buf);  # Input > 9 chars
+
+[DEBUG] :
+$ gcc -g -fstack-protector -D_FORTIFY_SOURCE=2 -o overflow overflow.c
+$ python3 -c 'print("A"*100)' | ./overflow
+*** stack smashing detected ***
+
+[SOLUTION] :
+Utiliser des fonctions sécurisées :
+fgets(buf, sizeof(buf), stdin);
+
+9. VARIABLE NON INITIALISÉE
+---------------------------------
+[CODE BUGGÉ] :
+int x;
+printf("%d", x);  # Valeur aléatoire
+
+[DEBUG] :
+$ valgrind --track-origins=yes ./uninit
+== Use of uninitialised value
+==    at 0x10917B: main (uninit.c:3)
+
+[SOLUTION] :
+Toujours initialiser :
+int x = 0;
+
+10. DOUBLE FREE
+---------------------------------
+[CODE BUGGÉ] :
+free(p);
+free(p);  # Double liberation
+
+[DEBUG] :
+$ valgrind ./doublefree
+== Invalid free()
+==    at 0x483CA3F: free (vg_replace_malloc.c:530)
+
+[SOLUTION] :
+Mettre à NULL après free :
+free(p); p = NULL;

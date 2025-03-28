@@ -1,0 +1,140 @@
+🐞 GUIDE COMPLET DE DÉBOGAGE LINUX 🐞
+
+🔧 1. OUTILS DE BASE
+--------------------------------------------------
+# Installation
+sudo apt-get install gdb valgrind strace ltrace
+
+# Exemple : Installation vérifiée
+valgrind --version  # Doit afficher la version installée
+
+🚩 2. COMPILATION AVEC FLAGS
+--------------------------------------------------
+# Commande type avec explications :
+gcc -g3              # Infos de debug complètes (pour gdb)
+   -O0               # Pas d'optimisation (meilleur debug)
+   -Wall             # Avertissements standards
+   -Wextra           # Avertissements supplémentaires
+   -Werror           # Transforme les warnings en erreurs
+   -fsanitize=address # Détecte erreurs mémoire (buffer overflow...)
+   -fsanitize=undefined # Détecte comportements indéfinis
+   -o mon_programme
+   mon_programme.c
+
+# Exemple concret :
+# Fichier buggy.c (contient un bug intentionnel)
+#include <stdio.h>
+
+int main() {
+    int tableau[5];
+    tableau[5] = 42;  // Débordement !
+    printf("Valeur : %d\n", tableau[5]);
+    return 0;
+}
+
+# Compilation qui détectera le bug :
+gcc -g3 -O0 -Wall -Wextra -fsanitize=address buggy.c -o buggy
+
+🐛 3. GDB - EXEMPLE PRATIQUE
+--------------------------------------------------
+# Fichier exemple.c
+#include <stdio.h>
+
+void fonction_buggee() {
+    int *p = NULL;
+    *p = 42;  // Segmentation fault
+}
+
+int main() {
+    printf("Début\n");
+    fonction_buggee();
+    printf("Fin\n");
+    return 0;
+}
+
+# Commandes GDB :
+gdb ./exemple
+(gdb) break main	# Point d'arrêt sur main()
+(gdb) run			# Exécution
+(gdb) next			# Avancer pas à pas
+(gdb) backtrace  	# Voir la pile quand ça crash
+(gdb) print p		# Examiner la variable
+(gbd) list			# Affiche le code autour
+
+🧹 4. VALGRIND - EXEMPLE DE FUITE MÉMOIRE
+--------------------------------------------------
+# Fichier leak.c
+#include <stdlib.h>
+
+int main() {
+    int *p = malloc(10 * sizeof(int));
+    p[0] = 42;
+    // Oubli de free(p);
+    return 0;
+}
+
+# Analyse :
+valgrind --leak-check=full ./leak
+
+# Sortie typique :
+==12345== 40 bytes in 1 blocks are definitely lost
+==12345==    at 0x483B7F3: malloc (vg_replace_malloc.c:307)
+
+🔍 5. STRACE/LTRACE - EXEMPLES
+--------------------------------------------------
+# strace (appels système)
+strace -o trace.log ./mon_programme
+# Exemple de sortie :
+# open("fichier.txt", O_RDONLY) = -1 ENOENT (No such file...)
+
+# ltrace (appels bibliothèque)
+ltrace -o lib.log ./mon_programme
+# Exemple de sortie :
+# malloc(10) = 0x12345678
+
+🚨 6. SEGFAULT - PROCÉDURE
+--------------------------------------------------
+# Activer les core dumps
+ulimit -c unlimited
+
+# Exécuter le programme
+./mon_programme  # Crash -> génère core
+
+# Analyser le core
+gdb ./mon_programme core
+(gdb) backtrace
+
+💡 7. BONNES PRATIQUES - EXEMPLE
+--------------------------------------------------
+1. Reproduire le bug avec le minimum de code
+2. Utiliser git bisect pour trouver le commit fautif :
+   git bisect start
+   git bisect bad    # Version actuelle buggée
+   git bisect good v1.0  # Dernière version stable
+   # Test intermédiaire...
+   git bisect reset
+
+📝 8. FICHE MÉTHODOLOGIQUE
+--------------------------------------------------
+[Problème] : Crash après ajout feature X
+[Reproduction] : ./programme --option Y
+[Outils] : gdb, valgrind
+[Diagnostic] : Buffer overflow dans fonction Z
+[Solution] : Agrandir buffer de 1024 à 2048
+[Validation] : Test unitaire ajouté
+
+🔄 9. SCRIPTS UTILES
+--------------------------------------------------
+# debug.sh - Automatisation
+#!/bin/bash
+gcc -g -fsanitize=address $1 -o ${1%.*} || exit 1
+valgrind --leak-check=full ./${1%.*}
+gdb -ex "break main" -ex "run" ./${1%.*}
+
+# watch.sh - Recompilation auto
+#!/bin/bash
+while true; do
+  inotifywait -e modify $1
+  clear
+  gcc -g $1 -o ${1%.*} && ./${1%.*}
+done
