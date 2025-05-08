@@ -1,0 +1,79 @@
+==============================
+ GIT : MERGE vs REBASE (fiche)
+==============================
+
+🔀 MERGE
+--------
+- Combine deux branches avec un commit spécial de fusion.
+- Conserve l’historique original (branches visibles).
+- Ajoute un commit de merge.
+
+Avantages :
+✔️ Historique complet
+✔️ Aucun risque de modifier des commits existants
+
+Inconvénients :
+❌ Historique plus complexe/ramifié
+
+Exemple :
+main:   A---B---C
+                  \
+feature:           D---E
+
+Après merge :
+main:   A---B---C-------M
+                  \   /
+                   D-E
+
+
+🔁 REBASE
+---------
+- Rejoue les commits d’une branche au-dessus d’une autre.
+- Réécrit l’historique (commits modifiés).
+- Pas de commit de merge.
+
+Avantages :
+✔️ Historique linéaire et lisible
+✔️ Idéal pour une présentation propre
+
+Inconvénients :
+❌ Risqué en cas de rebase sur des branches déjà partagées
+
+Exemple :
+main:   A---B---C
+                  \
+feature:           D---E
+
+Après rebase :
+main:   A---B---C---D'---E'
+
+
+⚔️ COMPARAISON RAPIDE
+---------------------
+| Action  | Historique | Conflits | Avantages              |
+|---------|------------|----------|------------------------|
+| merge   | Complexe   | Parfois  | Conserve tout          |
+| rebase  | Linéaire   | Parfois  | Historique plus propre |
+
+✅ CONSEILS
+-----------
+- Travailler seul → rebase (propre)
+- Travail collaboratif → merge (sécurisé)
+- Ne jamais rebase une branche déjà poussée/pullée par d’autres
+
+📦 COMMANDES BASH PRATIQUES
+----------------------------
+
+# 👉 MERGE (classique, sécurisé)
+git checkout main
+git pull origin main           # récupère les dernières modifs distantes
+git merge nom_de_branche       # fusionne ta branche dans main
+git push origin main           # pousse le résultat du merge
+
+# 👉 REBASE (historique propre)
+git checkout nom_de_branche
+git fetch origin               # récupère les commits distants
+git rebase origin/main         # rejoue les commits locaux sur main
+# En cas de conflit : résoudre, puis
+git rebase --continue
+git push --force-with-lease    # ⚠️ push forcé, attention en travail d'équipe
