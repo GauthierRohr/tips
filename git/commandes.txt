@@ -1,0 +1,17 @@
+Git est composé de 5 compartiments :
+
+Stash				Workspace				Index				Local repo				Remote repo
+
+				<-	git stash															
+git stash pop	->
+					git status		<->
+					git add			-->
+									<--		git restore --staged <fichier>						
+											git commmit	-->		
+											git log		<->					
+																git push	-->		
+					git init
+					git config --global user.name "Gauthier Rohr"
+					git config --global user.email "rohr.gauthier@gmail.com"
+					git diff	<----------------------------->
+					git diff <fichier>

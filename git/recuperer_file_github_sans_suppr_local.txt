@@ -1,0 +1,19 @@
+Récupérer un fichier distant (github) qui n'est pas présent en local
+-> sans supprimer ce qu'on a en local
+
+1.	Assure-toi d’être bien sur ta branche locale main :
+
+git branch
+(si tu es pas sur main, fais git checkout main)
+
+2.	Configure le suivi avec la branche distante :
+
+git branch --set-upstream-to=origin/main main
+
+
+3.	Récupère les commits distants (le .gitignore) sans écraser ton travail local :
+
+git pull --rebase origin main
+
+4.	Si tout est bon, tu peux pousser ton code :
+git push origin main
