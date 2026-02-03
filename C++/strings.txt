@@ -1,0 +1,92 @@
+Strings :
+
+Needs #include <string> 
+
+1 - Access String :
+
+	string myString = "Hello";
+	cout << myString[0];
+
+	=> Outputs H
+
+2 - To print the last character of a string, you can use the following code :
+
+	string myString = "Hello";
+	cout << myString[myString.length() - 1];
+	
+	=> Outputs o
+
+3 - Change string char :
+
+	string myString = "Hello";
+	myString[0] = 'J';
+	cout << myString;
+
+	=>  Outputs Jello instead of Hello
+
+4 - at() function :
+
+	The <string> library also has an at() function.
+	It can be used to access characters in a string:
+
+	string myString = "Hello";
+	cout << myString; // Outputs Hello
+
+	cout << myString.at(0);  // First character
+	cout << myString.at(1);  // Second character
+	cout << myString.at(myString.length() - 1);  // Last character
+
+	myString.at(0) = 'J';
+	cout << myString;  // Outputs Jello
+
+5 - User Input Strings : cin
+
+	string firstName;
+	cout << "Type your first name: ";
+	cin >> firstName; // get user input from the keyboard
+	cout << "Your name is: " << firstName;
+
+	// Type your first name: John
+	// Your name is: John
+
+	/!\ cin considers a space (whitespace, tabs, etc) as a terminating character,
+	which means that it can only store a single word (even if you type many words):
+
+	string fullName;
+	cout << "Type your full name: ";
+	cin >> fullName;
+	cout << "Your name is: " << fullName;
+
+	// Type your full name: John Doe
+	// Your name is: John
+
+6 - getline() 
+
+	That's why we often use the getline() function to read a line of text.
+	It takes cin as the first parameter, and the string variable as second:
+
+	string fullName;
+	cout << "Type your full name: ";
+	getline (cin, fullName);
+	cout << "Your name is: " << fullName;
+
+	// Type your full name: John Doe
+	// Your name is: John Doe
+
+7 - Omitting Namespace
+
+	You might see some C++ programs that run without the standard namespace library.
+	The using namespace std line can be omitted and replaced with the std keyword,
+	followed by the :: operator for string (and cout) objects:
+
+	#include <iostream>
+	#include <string>
+	// using namespace std; - Remove this line
+
+	int main()
+	{
+		std::string greeting = "Hello";
+		std::cout << greeting;
+		return 0;
+	}
+
