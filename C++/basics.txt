@@ -1,0 +1,15 @@
+.append :
+
+	string firstName = "John ";
+	string lastName = "Doe";
+	string fullName = firstName.append(lastName);
+	cout << fullName;
+
+=> affiche "John Doe"
+
+.length() = .size():
+	string txt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	cout << "The length of the txt string is: " << txt.length();
+
+=> affiche "The length of the txt string is: 26"
+
