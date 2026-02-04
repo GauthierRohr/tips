@@ -1,6 +1,4 @@
-Strings :
-
-Needs #include <string> 
+Strings : Needs #include <string> 
 
 1 - Access String :
 
@@ -24,7 +22,7 @@ Needs #include <string>
 
 	=>  Outputs Jello instead of Hello
 
-4 - at() function :
+4 - .at() function :
 
 	The <string> library also has an at() function.
 	It can be used to access characters in a string:
@@ -89,4 +87,19 @@ Needs #include <string>
 		std::cout << greeting;
 		return 0;
 	}
+
+8 - .append() :
+
+	string firstName = "John ";
+	string lastName = "Doe";
+	string fullName = firstName.append(lastName);
+	cout << fullName;
+
+=> affiche "John Doe"
+
+9 - .length() = .size():
+	string txt = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	cout << "The length of the txt string is: " << txt.length();
+
+=> affiche "The length of the txt string is: 26"
 
