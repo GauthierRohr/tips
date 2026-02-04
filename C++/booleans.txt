@@ -1,0 +1,42 @@
+1 - Boolean Values
+	
+	A boolean variable is declared with the bool keyword and can take the values true or false:
+
+	bool isCodingFun = true;
+	bool isFishTasty = false;
+
+	cout << isCodingFun << "\n";  // Outputs 1 (true)
+	cout << isFishTasty << "\n"; // Outputs 0 (false)
+
+2 - Printing true/false with boolalpha
+
+	If you prefer to print true and false as words instead of 1 and 0,
+	you can use the boolalpha manipulator:
+
+	Example
+	bool isCodingFun = true;
+	bool isFishTasty = false;
+
+	cout << boolalpha; // enable printing "true"/"false"
+
+	cout << isCodingFun << "\n";   // Outputs true
+	cout << isFishTasty << "\n";  // Outputs false
+
+	Note: boolalpha is not a data type.
+	It is an I/O manipulator - a setting that changes how cout displays boolean values.
+	When you use it, you are telling cout:
+	"From now on, print booleans as true and false instead of 1 and 0."
+
+
+3 - Resetting Back With noboolalpha
+
+	If you want to go back to the default behavior (printing 1 and 0), you can use noboolalpha:
+
+	Example
+	bool isCodingFun = true;
+
+	cout << boolalpha;   // print as true/false
+	cout << isCodingFun << "\n";  // Outputs true
+
+	cout << noboolalpha; // reset to 1/0
+	cout << isCodingFun << "\n";  // Outputs 1
